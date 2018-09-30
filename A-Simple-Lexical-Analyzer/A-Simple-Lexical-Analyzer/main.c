@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "lexicalAnalyzer.h"
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Hello, World!\n");
+    prog = "int main() { int a = 0; }";
+    Debug();
     return 0;
 }

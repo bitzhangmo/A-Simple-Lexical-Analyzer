@@ -21,7 +21,7 @@
 // 定界符
 enum token_kind
 {
-    ERROR_TOKEN,    //  错误
+    ERROR_TOKEN = 1,    //  错误
     INENT,          //  标识符
     INT_CONST,      //  整型常数
     FLOAT_CONST,    //  浮点型常数
@@ -114,12 +114,77 @@ void scanner()
         }
     }
     
-    else if(ch == '\"')
-    {
+    /*else if(ch == '\"')
+    {// 字符串检查
         syn = CHAR_CONST;
-        sum = 0;
+        m = 0;
+        token[m++] = ch;
+        while((ch = prog[p++])!='\"')
+        {
+            token[m++] = ch;
+        }
+        涉及到诸如 char a[] = "\"test";这种转义字符里的对应字符串，暂时先跳过
+    }*/
+
+    switch(ch)
+    {
+        case '=':
+            m = 0;
+            token[m++] = ch;
+            syn = ASSIGN;
+            if((ch = prog[p++]) == '=')
+            {
+                token[m++] = ch;
+                token[m] = '\0';
+                p--;
+                syn = EQ;
+            }
+            break;
+        case '{':
+            m = 0;
+            token[m] = ch;
+            syn = LP;
+            break;
+        case '}':
+            m = 0;
+            token[m] = ch;
+            syn = RP;
+            break;
+        case ';':
+            m = 0;
+            token[m] = ch;
+            syn = SEMI;
+            break;
+        case ',':
+            m = 0;
+            token[m] = ch;
+            syn = COMMA;
+            break;
+        case '(':
+            m = 0;
+            token[m] = ch;
+            syn = LB;
+            break;        
+        case ')':
+            m = 0;
+            token[m] = ch;
+            syn = RB;
+            break;
     }
-    
+
 }
 
-
+void Debug()
+{
+    do()
+    {
+        scanner();
+        switch(syn)
+        {
+            case INT_CONST: printf("("+INT_CONST+",%d)\n",sum); break;
+            case FLOAT_CONST: printf("("+FLOAT_CONST+",%f)\n",sum); break;
+            case ERROR_TOKEN: printf("(error!)"); break;
+            default: printf("("+syn+",%s)\n",token); break;
+        }
+    }while(syn != 0)
+}
