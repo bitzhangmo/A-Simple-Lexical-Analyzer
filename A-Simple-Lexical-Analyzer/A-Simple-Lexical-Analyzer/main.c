@@ -9,8 +9,7 @@
 #include <stdio.h>
 #include "lexicalAnalyzer.h"
 int main(int argc, const char * argv[]) {
-    //char test[28] ="int main() { int a = 0; }";
-    //*prog = test;
+    sourceReader();
     Debug();
     return 0;
 }

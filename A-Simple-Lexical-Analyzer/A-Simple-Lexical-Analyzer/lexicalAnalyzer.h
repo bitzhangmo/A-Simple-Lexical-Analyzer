@@ -11,6 +11,9 @@
 
 
 #endif /* lexicalAnalyzer_h */
+void Debug();
+void Scanner();
+void sourceReader();
 #define WORD_LENGTH 100         // 单词最大长度
 #define WORD_OF_PROGRAM 1000    // 最多单词数
 #define KEYWORD_NUMBER 16        // 关键词个数
@@ -31,7 +34,7 @@ enum token_kind
     DOUBLE,
     VOID,
     CHAR,
-    IF,
+    IF = 11,
     ELSE,
     DO,
     WHILE,
@@ -41,7 +44,7 @@ enum token_kind
     GOTO,
     CONTINUE,
     BREAK,
-    RETURN,
+    RETURN = 21,
     EQ,             //  ==
     ASSIGN,         //  =
     LP,             //  {
@@ -51,20 +54,26 @@ enum token_kind
     LB,             //  (
     RB,             //  )
     PLUS,           //  +
-    PLUSPLUS,       //  ++
+    PLUSPLUS = 31,       //  ++
     SUB,            //  -
     SUBSUB,         //  --
     MULT,           //  *
     DIV,            //  /
     PERCENT,        //  %
-
+    ENTER,          //  \n
+    NOT,            //  !
+    NOTEQ,          //  !=
+    MORETHAN,       //  >
+    LESSTHAN,       //  <
+    MOREEQ,         //  >=
+    LESSEQ,         //  <=
 } word_kind;
 
 char* rwtab[KEYWORD_NUMBER] = { "int","float","double",
                                 "void","char","if",
                                 "else","do","while",
-                                "switch","case","for"
-                                "goto","continue","break"
+                                "switch","case","for",
+                                "goto","continue","break",
                                 "return"};
 char ch;
 int syn = 0;                // 单词种别码
@@ -72,12 +81,14 @@ int row = 1;                // 行数计数器
 int p = 0;                  // 字符计数器
 int m = 0;
 char token[WORD_LENGTH] = {};    // 单词字符串
-char prog[WORD_LENGTH*WORD_OF_PROGRAM] = "int main() { int a = 32768; float b = 3.14; if(a == b); }";    // 程序字符串
+char prog[WORD_LENGTH*WORD_OF_PROGRAM];
+//= "int main() { int a = 32767; float b = 3.14; if(a == b) do{ switch(a){case,break;}}; }";    // 程序字符串
 double sum;                 // 整数或小数值
 
 
-void scanner()
+void Scanner()
 {
+    syn = 0;
     for(int i = 0; i<WORD_LENGTH; i++)
         token[i] = NULL;
     ch = prog[p++];         // 读入程序
@@ -231,9 +242,52 @@ void scanner()
             m = 0;
             token[m] = ch;
             syn = PERCENT;
-            break;          
+            break;
+        case '\n':
+            syn = ENTER;
+            break;
+        case '!':
+            m = 0;
+            token[m++] = ch;
+            syn = NOT;
+            if((ch = prog[p++]) == '=')
+            {
+                token[m++] = ch;
+                token[m] = '\0';
+                syn = NOTEQ;
+            }
+            else p--;
+            break;
+        case '>':
+            m = 0;
+            token[m++] = ch;
+            syn = MORETHAN;
+            if((ch = prog[p++]) == '=')
+            {
+                token[m++] = ch;
+                token[m] = '\0';
+                syn = MOREEQ;
+            }
+            else p--;
+            break;
+        case '<':
+            m = 0;
+            token[m++] = ch;
+            syn = LESSTHAN;
+            if((ch = prog[p++]) == '=')
+            {
+                token[m++] = ch;
+                token[m] = '\0';
+                syn = LESSEQ;
+            }
+            else p--;
+            break;
         case '\0':
             syn = 0;
+            break;
+        default:
+            syn = ERROR_TOKEN;
+            break;
     }
 }
 
@@ -241,14 +295,38 @@ void Debug()
 {
     do
     {
-        scanner();
+        Scanner();
         switch(syn)
         {
             case INT_CONST: printf("(%d,%d)\n",syn,(int)sum); break;
             case FLOAT_CONST: printf("(%d,%f)\n",syn,sum); break;
             case ERROR_TOKEN: printf("(error!)\n"); break;
+            case ENTER: break;
             case 0: break;
             default: printf("(%d,%s)\n",syn,token); break;
         }
     }while(syn != 0);
 }
+
+void sourceReader()
+{
+    FILE *fp;
+    if((fp = fopen("sourceFile.txt", "rb")) == NULL)
+    {
+        exit(0);
+    }
+    fseek(fp, 0, SEEK_END);
+    int fileLen = ftell(fp);
+    char *tmp = (char*) malloc(sizeof(char)* fileLen);
+    fseek(fp, 0, SEEK_SET);
+    fread(tmp, fileLen, sizeof(char), fp);
+    fclose(fp);
+    
+    for(int i = 0; i<fileLen; ++i)
+    {
+        prog[i] = tmp[i];
+    }
+        
+}
+
+
