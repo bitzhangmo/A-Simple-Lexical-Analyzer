@@ -13,7 +13,7 @@
 #endif /* lexicalAnalyzer_h */
 #define WORD_LENGTH 100         // 单词最大长度
 #define WORD_OF_PROGRAM 1000    // 最多单词数
-#define KEYWORD_NUMBER 5        // 关键词个数
+#define KEYWORD_NUMBER 16        // 关键词个数
 // 标识符
 // 关键字
 // 常量
@@ -28,9 +28,20 @@ enum token_kind
     CHAR_CONST,     //  字符型常量
     INT,            //  关键字
     FLOAT,
+    DOUBLE,
+    VOID,
     CHAR,
     IF,
     ELSE,
+    DO,
+    WHILE,
+    SWITCH,
+    CASE,
+    FOR,
+    GOTO,
+    CONTINUE,
+    BREAK,
+    RETURN,
     EQ,             //  ==
     ASSIGN,         //  =
     LP,             //  {
@@ -39,11 +50,24 @@ enum token_kind
     COMMA,          //  ,
     LB,             //  (
     RB,             //  )
+    PLUS,           //  +
+    PLUSPLUS,       //  ++
+    SUB,            //  -
+    SUBSUB,         //  --
+    MULT,           //  *
+    DIV,            //  /
+    PERCENT,        //  %
+
 } word_kind;
 
-char* rwtab[KEYWORD_NUMBER] = {"int","float","char","if","else"};
+char* rwtab[KEYWORD_NUMBER] = { "int","float","double",
+                                "void","char","if",
+                                "else","do","while",
+                                "switch","case","for"
+                                "goto","continue","break"
+                                "return"};
 char ch;
-int syn = 0;                    // 单词种别码
+int syn = 0;                // 单词种别码
 int row = 1;                // 行数计数器
 int p = 0;                  // 字符计数器
 int m = 0;
@@ -137,6 +161,7 @@ void scanner()
                 token[m] = '\0';
                 syn = EQ;
             }
+            else p--;
             break;
         case '{':
             m = 0;
@@ -168,10 +193,48 @@ void scanner()
             token[m] = ch;
             syn = RB;
             break;
+        case '+':
+            m = 0;
+            token[m++] = ch;
+            syn = PLUS;
+            if((ch = prog[p++] == '+'))
+            {
+                token[m++] = ch;
+                token[m] = '\0';
+                syn = PLUSPLUS;
+            }
+            else p--;
+            break;
+        case '-':
+            m = 0;
+            token[m++] = ch;
+            syn = SUB;
+            if((ch = prog[p++] == '-'))
+            {
+                token[m++] = ch;
+                token[m] = '\0';
+                syn = SUBSUB;
+            }
+            else p--;
+            break;
+        case '*':
+            m = 0;
+            token[m] = ch;
+            syn = MULT;
+            break;
+        case '/':
+            m = 0;
+            token[m] = ch;
+            syn = DIV;
+            break;
+        case '%':
+            m = 0;
+            token[m] = ch;
+            syn = PERCENT;
+            break;          
         case '\0':
             syn = 0;
     }
-
 }
 
 void Debug()
