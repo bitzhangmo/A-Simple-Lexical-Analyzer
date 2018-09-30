@@ -43,12 +43,12 @@ enum token_kind
 
 char* rwtab[KEYWORD_NUMBER] = {"int","float","char","if","else"};
 char ch;
-int syn;                    // 单词种别码
+int syn = 0;                    // 单词种别码
 int row = 1;                // 行数计数器
 int p = 0;                  // 字符计数器
 int m = 0;
-char token[WORD_LENGTH];    // 单词字符串
-char prog[WORD_LENGTH*WORD_OF_PROGRAM];     // 程序字符串
+char token[WORD_LENGTH] = {};    // 单词字符串
+char prog[WORD_LENGTH*WORD_OF_PROGRAM] = "int main() { int a = 32768; float b = 3.14; if(a == b); }";    // 程序字符串
 double sum;                 // 整数或小数值
 
 
@@ -57,7 +57,7 @@ void scanner()
     for(int i = 0; i<WORD_LENGTH; i++)
         token[i] = NULL;
     ch = prog[p++];         // 读入程序
-    while (ch = ' ')
+    while (ch == ' ')
     {
         ch = prog[p++];     // 屏蔽空格
     }
@@ -73,7 +73,6 @@ void scanner()
         token[m++] = '\0';
         p--;    // 将多移动的计数器退回
         syn = INENT;
-        
         for(int n = 0; n<KEYWORD_NUMBER; n++)
         {// 关键字检查
             if(strcmp(token,rwtab[n]) == 0)
@@ -126,7 +125,7 @@ void scanner()
         涉及到诸如 char a[] = "\"test";这种转义字符里的对应字符串，暂时先跳过
     }*/
 
-    switch(ch)
+    else switch(ch)
     {
         case '=':
             m = 0;
@@ -136,7 +135,6 @@ void scanner()
             {
                 token[m++] = ch;
                 token[m] = '\0';
-                p--;
                 syn = EQ;
             }
             break;
@@ -170,21 +168,24 @@ void scanner()
             token[m] = ch;
             syn = RB;
             break;
+        case '\0':
+            syn = 0;
     }
 
 }
 
 void Debug()
 {
-    do()
+    do
     {
         scanner();
         switch(syn)
         {
-            case INT_CONST: printf("("+INT_CONST+",%d)\n",sum); break;
-            case FLOAT_CONST: printf("("+FLOAT_CONST+",%f)\n",sum); break;
-            case ERROR_TOKEN: printf("(error!)"); break;
-            default: printf("("+syn+",%s)\n",token); break;
+            case INT_CONST: printf("(%d,%d)\n",syn,(int)sum); break;
+            case FLOAT_CONST: printf("(%d,%f)\n",syn,sum); break;
+            case ERROR_TOKEN: printf("(error!)\n"); break;
+            case 0: break;
+            default: printf("(%d,%s)\n",syn,token); break;
         }
-    }while(syn != 0)
+    }while(syn != 0);
 }
