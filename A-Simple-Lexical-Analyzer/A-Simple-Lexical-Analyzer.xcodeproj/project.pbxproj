@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		84AFD61A2160CB1F00A0FE8D /* A-Simple-Lexical-Analyzer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "A-Simple-Lexical-Analyzer"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84AFD61D2160CB1F00A0FE8D /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		84AFD6242160F28500A0FE8D /* lexicalAnalyzer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lexicalAnalyzer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				84AFD61D2160CB1F00A0FE8D /* main.c */,
+				84AFD6242160F28500A0FE8D /* lexicalAnalyzer.h */,
 			);
 			path = "A-Simple-Lexical-Analyzer";
 			sourceTree = "<group>";
