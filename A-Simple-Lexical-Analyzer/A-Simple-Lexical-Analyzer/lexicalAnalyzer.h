@@ -80,7 +80,7 @@ int syn = 0;                // 单词种别码
 int row = 1;                // 行数计数器
 int p = 0;                  // 字符计数器
 int m = 0;
-char token[WORD_LENGTH] = {};    // 单词字符串
+char token[WORD_LENGTH] = {};       // 单词字符串
 char prog[WORD_LENGTH*WORD_OF_PROGRAM];
 //= "int main() { int a = 32767; float b = 3.14; if(a == b) do{ switch(a){case,break;}}; }";    // 程序字符串
 double sum;                 // 整数或小数值
@@ -148,17 +148,17 @@ void Scanner()
         }
     }
     
-    /*else if(ch == '\"')
-    {// 字符串检查
+    else if(ch == '\'')
+    {// 字符检查
         syn = CHAR_CONST;
         m = 0;
         token[m++] = ch;
-        while((ch = prog[p++])!='\"')
-        {
-            token[m++] = ch;
-        }
-        涉及到诸如 char a[] = "\"test";这种转义字符里的对应字符串，暂时先跳过
-    }*/
+        ch = prog[p++];
+        token[m++] = ch;
+        token[m++] = '\'';
+        token[m++] = '\0';
+        p--;
+    }
 
     else switch(ch)
     {

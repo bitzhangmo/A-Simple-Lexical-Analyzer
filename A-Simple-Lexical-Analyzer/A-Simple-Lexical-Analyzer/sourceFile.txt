@@ -1,6 +1,7 @@
 int main()
 {
     int a,b,r;
+    char ab = 'q';
     a = 4;
     b = 6;
     if(a<b)
